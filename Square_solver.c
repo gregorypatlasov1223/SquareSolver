@@ -1,45 +1,69 @@
 #include <stdio.h>
-#include <locale.h>
+#include <TXLib.h>
 #include <math.h>
+void solver(double x, double y, double z, double n);
+double input(double u, double v, double w);
 int main(void)
 {
-	setlocale(LC_ALL, "Russian");
-	char ch;
-	double a, b, c;
-	double D;
-	double x0, x1, x2;
-	printf("Введите коэффициенты a,b и c квадратного уравнения вида a*x*x+b*x+c=0.\n");
-	printf("Для завершения программы нажмите f.\n");
-	printf("Введите коэффициент a.\n");
-	scanf("%lf", &a);
-	printf("Введите коэффициент b.\n");
-	scanf("%lf", &b);
-	printf("Введите коэффициент c.\n");
-	scanf("%lf", &c);
-	D= b * b - 4 * a * c;
+	printf("Решим уравнение вида a*x*x + b*x + c = 0.\n");
+	double coef_1, coef_2, coef_3;
+	coef_1=1;
+	coef_2=2;
+	coef_3=3;
 
-	while ((ch = getchar()) != 'f')
-	{
-		if (D < 0)
-			printf("Решений нет!\n");
-
-		else if (D > 0)
-		{
-			x1 = (-b + sqrt(D)) / 2 * a;
-			x2 = (-b - sqrt(D)) / 2 * a;
-			printf("Корнями уравнения являются числа %lf и %lf.\n", x1, x2);
-		}
-
-		else
-		{
-			x0 = (-b + sqrt(D)) / 2 * a;
-			printf("Уравнение имеет единственный корень = %lf.\n", x0);
-		}
-		printf("Напишите другие коэффициенты уравнения или нажмите f для завершения.\n");
-	}
+	double discriminant;
+	discriminant =input(coef_1, coef_2,coef_3 );
+	printf("Теперь перейдем к нахождению корней уравнения.");
+    solver(discriminant,coef_1, coef_2,coef_3);
 
 
 	return 0;
+}
 
+double input(double u, double v, double w)  // программа для ввода коэффициентов и вычисления дискриминанта
+{
+	double D;
+	printf("Введите коэффициент a.\n");
+	scanf("%lf", &u);
+	printf("Введите коэффициент b.\n");
+	scanf("%lf", &v);
+	printf("Введите коэффициент c.\n");
+	scanf("%lf", &w);
+	D = v * v - 4 * u * w;
+	return D;
 
 }
+ void solver(double x, double y, double z, double n)    // программа по решению квадратного уравнения
+ {
+    char ch;
+    double root_0, root_1, root_2;
+    while ((ch = getchar()) != 'f')
+    {
+	if (x < 0)
+		printf("При заданных коэффициентах уравнение не имеет решений!\n");
+
+	else if (x > 0)
+	{
+		root_1 = (-z + sqrt(x)) / (2 * y);
+		root_2 = (-z - sqrt(x)) / (2 * y);
+		printf("Корнями уравнения являются числа %lf и %lf.\n", root_1, root_2);
+	}
+
+	else
+	{
+		root_0 = (-z + sqrt(x)) /(2 * y);
+		printf("Уравнение имеет единственный корень = %lf.\n", root_0);
+	}
+
+	if (y==0)
+    {
+        root_0 = -n/z;
+        printf("Корень уравнения равен %lf.\n", root_0);
+    }
+
+	printf("Напишите другие коэффициенты уравнения или нажмите f для завершения.\n");
+    }
+ }
+
+
+
