@@ -1,69 +1,80 @@
 #include <stdio.h>
 #include <math.h>
-void solver(double x, double y, double z);
-double input(double u, double v, double w);
-int main(void)
+void solver(double a, double b, double c, double *ptr_root1, double *ptr_root2);
+void input(double *ptr_a, double *ptr_b, double *ptr_c);
+int main()
 {
-	printf("Let's solve an equation of the form a*x*x + b*x + c = 0.\n");
-	double coef_a, coef_b, coef_c;
-	coef_a=0;
-	coef_b=0;
-	coef_c=0;
+    double coef_a = 0, coef_b = 0, coef_c = 0;
+    double root_1 = 0, root_2 = 0;
 
+    printf("Let's solve an equation of the form ax2 + bx + c = 0.\n");
 
-	input(coef_a, coef_b,coef_c);
-	printf("Now let's move on to finding the roots.\n");
-    solver(coef_a, coef_b,coef_c);
+    input(&coef_a, &coef_b, &coef_c);
 
+    printf("Now let's move on to finding the roots.\n");
 
+    solver(coef_a, coef_b,coef_c, &root_1, &root_2);
 
-	return 0;
+    return 0;
 }
 
-double input(double u, double v, double w)  // программа для ввода коэффициентов
+void input(double *ptr_a, double *ptr_b, double *ptr_c)
 {
-	double D;
-	printf("Enter the coefficient a.\n");
-	scanf("%lf", &u);
-	printf("Enter the coefficient b.\n");
-	scanf("%lf", &v);
-	printf("Enter the coefficient c.\n");
-	scanf("%lf", &w);
+    printf("Enter the coefficient a.\n");
+    scanf("%lf", ptr_a);
 
+    printf("Enter the coefficient b.\n");
+    scanf("%lf", ptr_b);
 
+    printf("Enter the coefficient c.\n");
+    scanf("%lf", ptr_c);
 }
- void solver(double x, double y, double z)    // программа по решению квадратного уравнения
- {
-    char ch;
-    double root_0, root_1, root_2;
-    double D;
-    D = y * y - 4 * x * z;
 
-    while ((ch = getchar()) != 'f')
+void solver(double a, double b, double c, double *ptr_root1, double *ptr_root2)
+{
+    double discriminant;
+
+    if (a == 0)
     {
-	if (D < 0)
-		printf("The equation has no solutions with the given coefficients!\n");
+        if (b == 0)
+        {
+            if (c == 0)
+                printf("An infinite number of solutions.");
+            else
+                printf("The equation has no solutions with the given coefficients!");
+        }
 
-	else if (D > 0)
-	{
-		root_1 = (-y + sqrt(D)) / (2 * x);
-		root_2 = (-y - sqrt(D)) / (2 * x);
-		printf("The roots of the equation are numbers %lf и %lf.\n", root_1, root_2);
-	}
+        else
+        {
+            *ptr_root1 = *ptr_root2 = -c/b;
+            printf("The root of the equation is %lf.\n", *ptr_root1);
+        }
+    }
+
     else
-	{
-		root_0 = -y/(2 * x);
-		printf("The equation has a single root = %lf.\n", root_0);
-	}
-    if (x==0)
     {
-        root_0 = -z/y;
-        printf("The root of the equation is %lf.\n", root_0);
-    }
+        discriminant = b * b - 4 * a * c;
+        if (discriminant < 0)
+            printf("The equation has no solutions with the given coefficients!\n");
 
-	printf("Write another coefficients of the equation or press f to stop the programme.\n");
-    }
- }
+        else if (discriminant > 0)
+        {
+            *ptr_root1 = (-b + sqrt(discriminant)) / (2 * a);
+            *ptr_root2 = (-b - sqrt(discriminant)) / (2 * a);
+
+            printf("The roots of the equation are numbers %lf and %lf.\n", *ptr_root1, *ptr_root2);
+        }
+
+        else
+        {
+            *ptr_root1 = *ptr_root2 = -b / (2 * a);
+            printf("The equation has a single root = %lf.\n", *ptr_root1);
+        }
+
+     }
+}
+
+
 
 
 
