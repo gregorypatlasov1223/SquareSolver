@@ -2,29 +2,37 @@
 #include <stdbool.h>
 #include <math.h>
 #include <assert.h>
+#include <TXLib.h>
+
 const double ERROR_RATE = 10e-9;
+
 enum NumberSolutions
 {
-    NO_ROOTS = 0,
-    ONE_ROOT = 1,
-    TWO_ROOTS = 2,
+    NO_ROOTS       = 0,
+    ONE_ROOT       = 1,
+    TWO_ROOTS      = 2,
     INFINITE_ROOTS = -1
 };
+void user_wishes();
 
 int run_test();
-int one_test(double coef_a,double coef_b, double coef_c,
-                  double correct_root_1, double correct_root_2,
-                  int correct_num_roots);
+int one_test(double coef_a, double coef_b, double coef_c,
+             double correct_root_1, double correct_root_2,
+             int correct_num_roots);
 
 void input_coef(double *ptr_a, double *ptr_b, double *ptr_c);
 
-NumberSolutions solve_equation(double a, double b, double c, double *ptr_root1, double *ptr_root2);
-NumberSolutions square_equation(double a, double b, double c, double *ptr_root1, double *ptr_root2);
-NumberSolutions linear_equation (double b, double c, double *ptr_root1, double *ptr_root2);
+void input_error();
 
-void output_results(int number_of_roots, double *ptr_root1, double *ptr_root2);
+NumberSolutions solve_equation  (double a, double b, double c, double *ptr_root1, double *ptr_root2);
+NumberSolutions square_equation (double a, double b, double c, double *ptr_root1, double *ptr_root2);
+NumberSolutions linear_equation (          double b, double c, double *ptr_root1, double *ptr_root2);
+
+void output_results(int number_of_roots, double root1, double root2);
 
 bool compare_double(double number1, double number2);
+
+void sort_two_values(double *x1, double *x2);
 
 void clear_buffer();
 
@@ -35,11 +43,7 @@ int main()
 
     NumberSolutions nRoots = NO_ROOTS;
 
-    int num_errors = 0;
-
-    num_errors = run_test();
-
-    printf("num_errors = %d\n", num_errors);
+    user_wishes();
 
     input_coef(&coef_a, &coef_b, &coef_c);
 
@@ -47,7 +51,12 @@ int main()
 
     nRoots = solve_equation(coef_a, coef_b, coef_c, &root_1, &root_2);
 
-    output_results(nRoots, &root_1, &root_2);
+    if (compare_double(0, root_1))
+        root_1 = 0;
+    if (compare_double(0, root_2))
+        root_2 = 0;
+
+    output_results(nRoots, root_1, root_2);
 
     return 0;
 }
@@ -65,27 +74,15 @@ void input_coef(double *ptr_a, double *ptr_b, double *ptr_c)
 
     printf("Enter the coefficient a.\n");
     while (scanf("%lg", ptr_a) != 1)
-    {
-        printf("Input error!\n");
-        clear_buffer();
-        printf("Try again!\n");
-    }
+        input_error();
 
     printf("Enter the coefficient b.\n");
     while (scanf("%lg", ptr_b) != 1)
-    {
-        printf("Input error!\n");
-        clear_buffer();
-        printf("Try again!\n");
-    }
+        input_error();
 
     printf("Enter the coefficient c.\n");
     while (scanf("%lg", ptr_c) != 1)
-    {
-        printf("Input error!\n");
-        clear_buffer();
-        printf("Try again!\n");
-    }
+        input_error();
 }
 
 NumberSolutions solve_equation(double a, double b, double c, double *ptr_root1, double *ptr_root2)
@@ -95,7 +92,7 @@ NumberSolutions solve_equation(double a, double b, double c, double *ptr_root1, 
     assert(ptr_root1 != ptr_root2);
 
     if (compare_double(a, 0))
-        return linear_equation(b, c, ptr_root1, ptr_root2);
+        return linear_equation(   b, c, ptr_root1, ptr_root2);
     else
         return square_equation(a, b, c, ptr_root1, ptr_root2);
 }
@@ -128,15 +125,19 @@ NumberSolutions square_equation(double a, double b, double c, double *ptr_root1,
     assert(ptr_root1 != ptr_root2);
 
     double discriminant = NAN;
+    double sqrt_discriminant = NAN;
+
     discriminant = b * b - 4 * a * c;
+
+    sqrt_discriminant = sqrt(discriminant);
 
     if (discriminant < 0)
         return NO_ROOTS;
 
     else if (discriminant > 0)
     {
-        *ptr_root1 = (-b + sqrt(discriminant)) / (2 * a);
-        *ptr_root2 = (-b - sqrt(discriminant)) / (2 * a);
+        *ptr_root1 = (-b + sqrt_discriminant) / (2 * a);
+        *ptr_root2 = (-b - sqrt_discriminant) / (2 * a);
         return TWO_ROOTS;
     }
 
@@ -147,11 +148,10 @@ NumberSolutions square_equation(double a, double b, double c, double *ptr_root1,
     }
 }
 
-void output_results(int number_of_roots, double *ptr_root1, double *ptr_root2)
+void output_results(int number_of_roots, double root1, double root2)
 {
-    assert(ptr_root1);
-    assert(ptr_root2);
-    assert(ptr_root1 != ptr_root2);
+    assert(!isnan(root1));
+    assert(!isnan(root2));
 
     switch(number_of_roots)
     {
@@ -160,17 +160,17 @@ void output_results(int number_of_roots, double *ptr_root1, double *ptr_root2)
         break;
 
     case ONE_ROOT:
-        printf("The root of the equation is %lg.\n", *ptr_root1);
+        printf("The root of the equation is %lg.\n", root1);
         break;
 
     case TWO_ROOTS:
-        printf("The roots of the equation are numbers %lg and %lg.\n", *ptr_root1, *ptr_root2);
+        printf("The roots of the equation are numbers %lg and %lg.\n", root1, root2);
         break;
-
 
     case INFINITE_ROOTS:
         printf("An infinite number of solutions.");
         break;
+
     default :
         printf("Interesting choice!");
 
@@ -183,6 +183,9 @@ bool compare_double(double number1, double number2)
     if (isnan(number1) && isnan(number2))
         return true;
 
+    if ((isnan(number1) && !isnan(number2)) || (isnan(number2) && !isnan(number1)))
+        return false;
+
     if (fabs(number1 - number2) < ERROR_RATE)
         return true;
     else
@@ -192,12 +195,11 @@ bool compare_double(double number1, double number2)
 void clear_buffer()
 {
     int symbol = NAN;
-    while ((symbol = getchar()) != 'n' && symbol != EOF)
-        return;
+    while ((symbol = getchar()) != 'n' && symbol != EOF) ;
 }
 
 
-int one_test(double coef_a,double coef_b, double coef_c,
+int one_test(double coef_a, double coef_b, double coef_c,
                   double correct_root_1, double correct_root_2,
                   int correct_num_roots)
 {
@@ -206,9 +208,11 @@ int one_test(double coef_a,double coef_b, double coef_c,
 
     int nRoots = solve_equation(coef_a, coef_b, coef_c, &root_1, &root_2);
 
+    sort_two_values(&correct_root_1, &correct_root_2);
+    sort_two_values(&root_1, &root_2);
+
     if (!(nRoots == correct_num_roots &&
-         ((compare_double(correct_root_1, root_1) && compare_double(correct_root_2, root_2)) ||
-         (compare_double(correct_root_2, root_1) && compare_double(correct_root_1, root_2)))))
+         (compare_double(correct_root_1, root_1) && compare_double(correct_root_2, root_2))))
     {
         printf("FAIL: Solve_Square(%lg, %lg, %lg, &root_1, &root_2)" //TODO NAN check
                " --> %d, root_1 = %lg, root_2 = %lg (should be root_1 = %lg, root_2 = %lg).\n",
@@ -233,8 +237,44 @@ int run_test()
 }
 
 
+void input_error()
+{
+    printf("Input error!\n");
+    clear_buffer();
+    printf("Try again!\n");
+}
+
+void user_wishes()
+{
+    int symbols_number = 0;
+    int num_errors = 0;
+
+    num_errors = run_test();
+
+    printf("If you want to see the results of unit tests write 'YES'\n");
+    printf("If you don't want to see the results of unit testss write 'NO'\n");
+
+    scanf("%*s%n", &symbols_number);
+
+    if (symbols_number == 3)
+        printf("num_errors = %d\n", num_errors);
+    else
+        printf("Alright, let's move on to solving the equation.\n");
+}
 
 
+void sort_two_values(double *x1, double *x2)
+{
+    if (!isnan(*x1) && !isnan(*x2))
+    {
+        if (*x1 < *x2)
+        {
+            double temp = *x1;
+            *x1 = *x2;
+            *x2 = temp;
+        }
+    }
+}
 
 
 
