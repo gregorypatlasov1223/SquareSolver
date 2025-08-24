@@ -11,8 +11,8 @@ enum NumberSolutions
     INFINITE_ROOTS = -1
 };
 
-void test_solve_square();
-void check_answers(double coef_a,double coef_b, double coef_c,
+int run_test();
+int one_test(double coef_a,double coef_b, double coef_c,
                   double correct_root_1, double correct_root_2,
                   int correct_num_roots);
 
@@ -32,9 +32,14 @@ int main()
 {
     double coef_a = NAN, coef_b = NAN, coef_c = NAN;
     double root_1 = NAN, root_2 = NAN;
+
     NumberSolutions nRoots = NO_ROOTS;
 
-    test_solve_square();
+    int num_errors = 0;
+
+    num_errors = run_test();
+
+    printf("num_errors = %d\n", num_errors);
 
     input_coef(&coef_a, &coef_b, &coef_c);
 
@@ -175,6 +180,9 @@ void output_results(int number_of_roots, double *ptr_root1, double *ptr_root2)
 
 bool compare_double(double number1, double number2)
 {
+    if (isnan(number1) && isnan(number2))
+        return true;
+
     if (fabs(number1 - number2) < ERROR_RATE)
         return true;
     else
@@ -188,25 +196,8 @@ void clear_buffer()
         return;
 }
 
-void test_solve_square()
-{
-    double correct_root_1 = 2, correct_root_2 = 3;
 
-    int correct_num_roots = 2;
-
-    double coefficient_a = 1;
-    double coefficient_b = -5;
-    double coefficient_c = 6;
-
-    check_answers(coefficient_a, coefficient_b, coefficient_c,
-                  correct_root_1, correct_root_2,
-                  correct_num_roots);
-
-
-
-}
-
-void check_answers(double coef_a,double coef_b, double coef_c,
+int one_test(double coef_a,double coef_b, double coef_c,
                   double correct_root_1, double correct_root_2,
                   int correct_num_roots)
 {
@@ -216,13 +207,29 @@ void check_answers(double coef_a,double coef_b, double coef_c,
     int nRoots = solve_equation(coef_a, coef_b, coef_c, &root_1, &root_2);
 
     if (!(nRoots == correct_num_roots &&
-         (compare_double(correct_root_1, root_1) && compare_double(correct_root_2, root_2)) ||
-         (compare_double(correct_root_2, root_1) && compare_double(correct_root_1, root_2))))
+         ((compare_double(correct_root_1, root_1) && compare_double(correct_root_2, root_2)) ||
+         (compare_double(correct_root_2, root_1) && compare_double(correct_root_1, root_2)))))
+    {
         printf("FAIL: Solve_Square(%lg, %lg, %lg, &root_1, &root_2)" //TODO NAN check
-               " --> 2, root_1 = %lg, root_2 = %lg (should be root_1 = %lg, root_2 = %lg).\n",
-               coef_a, coef_b, coef_c, root_1, root_2, correct_root_1, correct_root_2);
+               " --> %d, root_1 = %lg, root_2 = %lg (should be root_1 = %lg, root_2 = %lg).\n",
+               coef_a, coef_b, coef_c, nRoots, root_1, root_2, correct_root_1, correct_root_2);
+        return 0;
+    }
+
     else
-        printf("All good!\n");
+        return 1;
+}
+
+
+int run_test()
+{
+    int failed = 0;
+    failed += !one_test(1, -5, 6, 2, 3, TWO_ROOTS);
+    failed += !one_test(0, 3, 6, -2, -2, ONE_ROOT);
+    failed += !one_test(0, 0, 1, NAN, NAN, NO_ROOTS);
+    failed += !one_test(0, 0, 0, NAN, NAN, INFINITE_ROOTS);
+
+    return failed;
 }
 
 
