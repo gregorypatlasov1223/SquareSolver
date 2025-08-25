@@ -1,10 +1,9 @@
+#include <TXLib.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
 #include <assert.h>
-#include <TXLib.h>
 
-const double ERROR_RATE = 10e-15;
 
 enum NumberSolutions
 {
@@ -13,20 +12,36 @@ enum NumberSolutions
     TWO_ROOTS      = 2,
     INFINITE_ROOTS = -1
 };
+
+struct coeffs
+{
+    double a;
+    double b;
+    double c;
+};
+
+struct roots
+{
+    double x1;
+    double x2;
+    NumberSolutions nRoots;
+};
+
+const double ERROR_RATE = 10e-15;
+
 void user_wishes();
 
-int run_test();
-int one_test(double coef_a, double coef_b, double coef_c,
-             double correct_root_1, double correct_root_2,
-             int correct_num_roots);
+void run_test();
+
+int one_test(coeffs t_coeffs_1, roots expexted_roots);
 
 void input_coef(double *ptr_a, double *ptr_b, double *ptr_c);
 
 void error_output();
 
-NumberSolutions solve_equation  (double a, double b, double c, double *ptr_root1, double *ptr_root2);
-NumberSolutions square_equation (double a, double b, double c, double *ptr_root1, double *ptr_root2);
-NumberSolutions linear_equation (          double b, double c, double *ptr_root1, double *ptr_root2);
+NumberSolutions solve_equation  (coeffs coefficiant, roots *ptr_root);
+NumberSolutions square_equation (coeffs coefficiant, roots *ptr_root);
+NumberSolutions linear_equation (coeffs coefficiant, roots *ptr_root);
 
 void output_results(int number_of_roots, double root1, double root2);
 
@@ -38,25 +53,24 @@ void clear_buffer();
 
 int main()
 {
-    double coef_a = NAN, coef_b = NAN, coef_c = NAN;
-    double root_1 = NAN, root_2 = NAN;
+    coeffs coeffs_1 = {};
 
-    NumberSolutions nRoots = NO_ROOTS;
+    roots roots_1 = {};
 
     user_wishes();
 
-    input_coef(&coef_a, &coef_b, &coef_c);
+    input_coef(&coeffs_1.a, &coeffs_1.b, &coeffs_1.c);
 
     printf("Now let's move on to finding the roots.\n");
 
-    nRoots = solve_equation(coef_a, coef_b, coef_c, &root_1, &root_2);
+    roots_1.nRoots = solve_equation(coeffs_1, &roots_1);
 
-    if (compare_double(0, root_1))
-        root_1 = 0;
-    if (compare_double(0, root_2))
-        root_2 = 0;
+    if (compare_double(0, roots_1.x1))
+        roots_1.x1 = 0;
+    if (compare_double(0, roots_1.x2))
+        roots_1.x2 = 0;
 
-    output_results(nRoots, root_1, root_2);
+    output_results(roots_1.nRoots, roots_1.x1, roots_1.x2);
 
     return 0;
 }
@@ -85,27 +99,27 @@ void input_coef(double *ptr_a, double *ptr_b, double *ptr_c)
         error_output();
 }
 
-NumberSolutions solve_equation(double a, double b, double c, double *ptr_root1, double *ptr_root2)
+NumberSolutions solve_equation(coeffs coefficiant, roots *ptr_root)
 {
-    assert(ptr_root1);
-    assert(ptr_root2);
-    assert(ptr_root1 != ptr_root2);
+    assert(&(ptr_root->x1));
+    assert(&(ptr_root->x2));
+    assert(&(ptr_root->x1) != &(ptr_root->x2));;
 
-    if (compare_double(a, 0))
-        return linear_equation(   b, c, ptr_root1, ptr_root2);
+    if (compare_double(coefficiant.a, 0))
+        return linear_equation(coefficiant,ptr_root);
     else
-        return square_equation(a, b, c, ptr_root1, ptr_root2);
+        return square_equation(coefficiant,ptr_root);
 }
 
-NumberSolutions linear_equation (double b, double c, double *ptr_root1, double *ptr_root2)
+NumberSolutions linear_equation (coeffs coefficiant, roots *ptr_root)
 {
-    assert(ptr_root1);
-    assert(ptr_root2);
-    assert(ptr_root1 != ptr_root2);
+    assert(&(ptr_root->x1));
+    assert(&(ptr_root->x2));
+    assert(&(ptr_root->x1) != &(ptr_root->x2));
 
-    if (compare_double(b, 0))
+    if (compare_double(coefficiant.b, 0))
     {
-        if (compare_double(c, 0))
+        if (compare_double(coefficiant.c, 0))
             return INFINITE_ROOTS;
         else
             return NO_ROOTS;
@@ -113,34 +127,36 @@ NumberSolutions linear_equation (double b, double c, double *ptr_root1, double *
 
     else
     {
-        *ptr_root1 = *ptr_root2 = -c/b;
+        ptr_root -> x1 = -coefficiant.c / coefficiant.b;
+        ptr_root -> x2 = -coefficiant.c / coefficiant.b;
         return ONE_ROOT;
     }
 }
 
-NumberSolutions square_equation(double a, double b, double c, double *ptr_root1, double *ptr_root2)
+NumberSolutions square_equation(coeffs coefficiant, roots *ptr_root)  //&(*ptr_root).x1    &(ptr_root->x1)
 {
-    assert(ptr_root1);
-    assert(ptr_root2);
-    assert(ptr_root1 != ptr_root2);
+    assert(&(ptr_root->x1));
+    assert(&(ptr_root->x2));
+    assert(&(ptr_root->x1) != &(ptr_root->x2));
 
     double discriminant = NAN;
 
-    discriminant = b * b - 4 * a * c;
+    discriminant = coefficiant.b * coefficiant.b - 4 * coefficiant.a * coefficiant.c;
 
     if (discriminant < 0)
         return NO_ROOTS;
 
     else if (discriminant > 0)
     {
-        *ptr_root1 = (-b + sqrt(discriminant)) / (2 * a);
-        *ptr_root2 = (-b - sqrt(discriminant)) / (2 * a);
+        ptr_root -> x1 = (-coefficiant.b + sqrt(discriminant)) / (2 * coefficiant.a);
+        ptr_root -> x2 = (-coefficiant.b - sqrt(discriminant)) / (2 * coefficiant.a);
         return TWO_ROOTS;
     }
 
     else
     {
-        *ptr_root1 = *ptr_root2 = -b / (2 * a);
+        ptr_root -> x1 = -coefficiant.b / (2 * coefficiant.a);
+        ptr_root -> x2 = -coefficiant.b / (2 * coefficiant.a);
         return ONE_ROOT;
     }
 }
@@ -180,13 +196,10 @@ bool compare_double(double number1, double number2)
     if (isnan(number1) && isnan(number2))
         return true;
 
-    if ((isnan(number1) && !isnan(number2)) || (isnan(number2) && !isnan(number1)))
+    if ((isnan(number1) && !isnan(number2)) || (!isnan(number1) && isnan(number2)))
         return false;
 
-    if (fabs(number1 - number2) < ERROR_RATE)
-        return true;
-    else
-        return false;
+    return fabs(number1 - number2) < ERROR_RATE;
 }
 
 void clear_buffer()
@@ -196,24 +209,27 @@ void clear_buffer()
 }
 
 
-int one_test(double coef_a, double coef_b, double coef_c,
-                  double correct_root_1, double correct_root_2,
-                  int correct_num_roots)
+int one_test(coeffs t_coeffs_1, roots expexted_roots)
 {
-    double root_1 = NAN;
-    double root_2 = NAN;
+    expexted_roots.x1 = NAN;
+    expexted_roots.x2 = NAN;
 
-    int nRoots = solve_equation(coef_a, coef_b, coef_c, &root_1, &root_2);
+    roots calculated_roots;
 
-    sort_two_values(&correct_root_1, &correct_root_2);
-    sort_two_values(&root_1, &root_2);
+    calculated_roots.nRoots = solve_equation(t_coeffs_1, &calculated_roots);
 
-    if (!(nRoots == correct_num_roots &&
-         (compare_double(correct_root_1, root_1) && compare_double(correct_root_2, root_2))))
+    sort_two_values(&expexted_roots.x1, &expexted_roots.x2);
+    sort_two_values(&calculated_roots.x1, &calculated_roots.x2);
+
+    if (!(calculated_roots.nRoots == expexted_roots.nRoots &&
+         (compare_double(expexted_roots.x1, calculated_roots.x2) && compare_double(expexted_roots.x2, calculated_roots.x2))))
     {
-        printf("FAIL: Solve_Square(%lg, %lg, %lg, &root_1, &root_2)" //TODO NAN check
-               " --> %d, root_1 = %lg, root_2 = %lg (should be root_1 = %lg, root_2 = %lg).\n",
-               coef_a, coef_b, coef_c, nRoots, root_1, root_2, correct_root_1, correct_root_2);
+        printf("FAIL: Solve_Square(%lg, %lg, %lg," //TODO NAN check
+               " --> %d, calculated_roots.x1 = %lg, calculated_roots.x2 = %lg"
+               " (should be expexted_roots.x1 = %lg, expexted_roots.x2 = %lg).\n",
+               t_coeffs_1.a, t_coeffs_1.b, t_coeffs_1.c,
+               calculated_roots.nRoots, calculated_roots.x1, calculated_roots.x2,
+               expexted_roots.x1, expexted_roots.x2);
         return 0;
     }
 
@@ -222,15 +238,16 @@ int one_test(double coef_a, double coef_b, double coef_c,
 }
 
 
-int run_test()
+void run_test()
 {
-    int failed = 0;
-    failed += !one_test(1, -5, 6, 2, 3, TWO_ROOTS);
-    failed += !one_test(0, 3, 6, -2, -2, ONE_ROOT);
-    failed += !one_test(0, 0, 1, NAN, NAN, NO_ROOTS);
-    failed += !one_test(0, 0, 0, NAN, NAN, INFINITE_ROOTS);
 
-    return failed;
+    coeffs t_coeffs_1[] = {     {1, -5, 6}        , {0, 3, 6},         {0, 0, 1},              {0, 0, 0}, };
+    roots t_roots_1[] = {  {2, 3, TWO_ROOTS}, {-2, -2, ONE_ROOT}, {NAN, NAN, NO_ROOTS}, {NAN, NAN, INFINITE_ROOTS} };
+
+    size_t size = sizeof(t_coeffs_1) / sizeof(t_coeffs_1[0]);
+
+    for (size_t i = 0; i < size; i++)
+        one_test(t_coeffs_1[i], t_roots_1[i]);
 }
 
 
@@ -246,7 +263,7 @@ void user_wishes()
     int symbols_number = 0;
     int num_errors = 0;
 
-    num_errors = run_test();
+    run_test();
 
     printf("If you want to see the results of unit tests write 'YES'\n");
     printf("If you don't want to see the results of unit testss write 'NO'\n");
@@ -264,7 +281,7 @@ void sort_two_values(double *number1, double *number2)
 {
     if (!isnan(*number1) && !isnan(*number2))
     {
-        if (*number1 < *number2)
+        if (*number1 > *number2)
         {
             double temp = *number1;
             *number1 = *number2;
