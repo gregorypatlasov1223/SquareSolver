@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <TXLib.h>
 
-const double ERROR_RATE = 10e-9;
+const double ERROR_RATE = 10e-15;
 
 enum NumberSolutions
 {
@@ -22,7 +22,7 @@ int one_test(double coef_a, double coef_b, double coef_c,
 
 void input_coef(double *ptr_a, double *ptr_b, double *ptr_c);
 
-void input_error();
+void error_output();
 
 NumberSolutions solve_equation  (double a, double b, double c, double *ptr_root1, double *ptr_root2);
 NumberSolutions square_equation (double a, double b, double c, double *ptr_root1, double *ptr_root2);
@@ -74,15 +74,15 @@ void input_coef(double *ptr_a, double *ptr_b, double *ptr_c)
 
     printf("Enter the coefficient a.\n");
     while (scanf("%lg", ptr_a) != 1)
-        input_error();
+        error_output();
 
     printf("Enter the coefficient b.\n");
     while (scanf("%lg", ptr_b) != 1)
-        input_error();
+        error_output();
 
     printf("Enter the coefficient c.\n");
     while (scanf("%lg", ptr_c) != 1)
-        input_error();
+        error_output();
 }
 
 NumberSolutions solve_equation(double a, double b, double c, double *ptr_root1, double *ptr_root2)
@@ -125,19 +125,16 @@ NumberSolutions square_equation(double a, double b, double c, double *ptr_root1,
     assert(ptr_root1 != ptr_root2);
 
     double discriminant = NAN;
-    double sqrt_discriminant = NAN;
 
     discriminant = b * b - 4 * a * c;
-
-    sqrt_discriminant = sqrt(discriminant);
 
     if (discriminant < 0)
         return NO_ROOTS;
 
     else if (discriminant > 0)
     {
-        *ptr_root1 = (-b + sqrt_discriminant) / (2 * a);
-        *ptr_root2 = (-b - sqrt_discriminant) / (2 * a);
+        *ptr_root1 = (-b + sqrt(discriminant)) / (2 * a);
+        *ptr_root2 = (-b - sqrt(discriminant)) / (2 * a);
         return TWO_ROOTS;
     }
 
@@ -237,7 +234,7 @@ int run_test()
 }
 
 
-void input_error()
+void error_output()
 {
     printf("Input error!\n");
     clear_buffer();
@@ -263,15 +260,15 @@ void user_wishes()
 }
 
 
-void sort_two_values(double *x1, double *x2)
+void sort_two_values(double *number1, double *number2)
 {
-    if (!isnan(*x1) && !isnan(*x2))
+    if (!isnan(*number1) && !isnan(*number2))
     {
-        if (*x1 < *x2)
+        if (*number1 < *number2)
         {
-            double temp = *x1;
-            *x1 = *x2;
-            *x2 = temp;
+            double temp = *number1;
+            *number1 = *number2;
+            *number2 = temp;
         }
     }
 }
