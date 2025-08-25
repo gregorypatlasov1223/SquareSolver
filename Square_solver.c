@@ -33,7 +33,7 @@ void user_wishes();
 
 void run_test();
 
-int one_test(coeffs t_coeffs_1, roots expexted_roots);
+int one_test(coeffs t_coeffs_1, roots expected_roots);
 
 void input_coef(double *ptr_a, double *ptr_b, double *ptr_c);
 
@@ -209,27 +209,24 @@ void clear_buffer()
 }
 
 
-int one_test(coeffs t_coeffs_1, roots expexted_roots)
+int one_test(coeffs t_coeffs_1, roots expected_roots)
 {
-    expexted_roots.x1 = NAN;
-    expexted_roots.x2 = NAN;
-
     roots calculated_roots;
 
     calculated_roots.nRoots = solve_equation(t_coeffs_1, &calculated_roots);
 
-    sort_two_values(&expexted_roots.x1, &expexted_roots.x2);
+    sort_two_values(&expected_roots.x1, &expected_roots.x2);
     sort_two_values(&calculated_roots.x1, &calculated_roots.x2);
 
-    if (!(calculated_roots.nRoots == expexted_roots.nRoots &&
-         (compare_double(expexted_roots.x1, calculated_roots.x2) && compare_double(expexted_roots.x2, calculated_roots.x2))))
+    if (!(calculated_roots.nRoots == expected_roots.nRoots &&
+         (compare_double(expected_roots.x1, calculated_roots.x1) && compare_double(expected_roots.x2, calculated_roots.x2))))
     {
         printf("FAIL: Solve_Square(%lg, %lg, %lg," //TODO NAN check
                " --> %d, calculated_roots.x1 = %lg, calculated_roots.x2 = %lg"
-               " (should be expexted_roots.x1 = %lg, expexted_roots.x2 = %lg).\n",
+               " (should be expected_roots.x1 = %lg, expeñted_roots.x2 = %lg).\n",
                t_coeffs_1.a, t_coeffs_1.b, t_coeffs_1.c,
                calculated_roots.nRoots, calculated_roots.x1, calculated_roots.x2,
-               expexted_roots.x1, expexted_roots.x2);
+               expected_roots.x1, expected_roots.x2);
         return 0;
     }
 
@@ -241,8 +238,8 @@ int one_test(coeffs t_coeffs_1, roots expexted_roots)
 void run_test()
 {
 
-    coeffs t_coeffs_1[] = {     {1, -5, 6}        , {0, 3, 6},         {0, 0, 1},              {0, 0, 0}, };
-    roots t_roots_1[] = {  {2, 3, TWO_ROOTS}, {-2, -2, ONE_ROOT}, {NAN, NAN, NO_ROOTS}, {NAN, NAN, INFINITE_ROOTS} };
+    coeffs t_coeffs_1[] = {  {1, -5, 6}       , {0, 3, 6}         , {0, 0, 1}           , {0, 0, 0}                  };
+    roots t_roots_1[]   = {  {2, 3, TWO_ROOTS}, {-2, -2, ONE_ROOT}, {NAN, NAN, NO_ROOTS}, {NAN, NAN, INFINITE_ROOTS} };
 
     size_t size = sizeof(t_coeffs_1) / sizeof(t_coeffs_1[0]);
 
@@ -281,7 +278,7 @@ void sort_two_values(double *number1, double *number2)
 {
     if (!isnan(*number1) && !isnan(*number2))
     {
-        if (*number1 > *number2)
+        if (*number1 < *number2)
         {
             double temp = *number1;
             *number1 = *number2;
