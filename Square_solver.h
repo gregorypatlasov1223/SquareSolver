@@ -26,7 +26,7 @@ void user_wishes();
 
 int run_test();
 
-int one_test(coeffs_data t_coeffs, roots_data *expected_roots);
+int one_test(coeffs_data t_coeffs, roots_data *expected_roots); //TODO t_coeffs - rename
 
 void input_coef(coeffs_data *coefficiant);
 
@@ -37,6 +37,8 @@ NumberSolutions square_equation (coeffs_data coefficiant, roots_data *ptr_root);
 NumberSolutions linear_equation (coeffs_data coefficiant, roots_data *ptr_root);
 
 void output_results(roots_data *solutions);
+
+void run_tests_from_file();
 
 bool compare_double(double number1, double number2);
 

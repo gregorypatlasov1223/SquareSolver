@@ -11,7 +11,7 @@ void input_coef(coeffs_data *coefficiant)
     assert(ptr_a != ptr_c);
     assert(ptr_b != ptr_c);*/
 
-    printf("Let's solve an equation of the form ax2 + bx + c = 0.\n");
+    printf("Let's solve an equation of the form ax^2 + bx + c = 0.\n");
 
     printf("Enter the coefficient a.\n");
     while (scanf("%lg", &(coefficiant->a)) != 1)

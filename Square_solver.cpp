@@ -5,7 +5,7 @@
 #include <assert.h>
 #include "Square_solver.h"
 
-int main()
+int main() //TODO argc argv
 {
     coeffs_data coeffs = {};
 
@@ -17,13 +17,15 @@ int main()
 
     user_wishes();
 
+    run_tests_from_file();
+
     input_coef(&coeffs);
 
     printf("Now let's move on to finding the roots.\n");
 
     roots.nRoots = solve_equation(coeffs, &roots);
 
-    if (compare_double(0, roots.x1))
+    if (compare_double(0, roots.x1)) //TODO in solve_equation
         roots.x1 = 0;
     if (compare_double(0, roots.x2))
         roots.x2 = 0;
@@ -142,9 +144,9 @@ void clear_buffer()
 }
 
 
-int one_test(coeffs_data t_coeffs, roots_data *expected_roots)
+int one_test(coeffs_data t_coeffs, roots_data *expected_roots) //TODO rename
 {
-    roots_data calculated_roots;
+    roots_data calculated_roots; //TODO initialize
 
     calculated_roots.nRoots = solve_equation(t_coeffs, &calculated_roots);
 
@@ -159,9 +161,9 @@ int one_test(coeffs_data t_coeffs, roots_data *expected_roots)
                " (should be expected_roots->x1 = %lg, expected_roots->x2 = %lg).\n",
                t_coeffs.a, t_coeffs.b, t_coeffs.c,
                calculated_roots.nRoots, calculated_roots.x1, calculated_roots.x2,
-               expected_roots->x1, expected_roots->x2);
+               expected_roots->x1, expected_roots->x2); //TODO use func
 
-        return 0;
+        return 0; //TODO bool
     }
 
     else
@@ -170,7 +172,7 @@ int one_test(coeffs_data t_coeffs, roots_data *expected_roots)
 
 int run_test()
 {
-    int passed = 0;
+    int passed = 0; //TODO rename
 
     coeffs_data t_coeffs[] = {  {1, -5, 6}       , {0, 3, 6}         , {0, 0, 1}           , {0, 0, 0}                  };
     roots_data t_roots[]   = {  {2, 3, TWO_ROOTS}, {-2, -2, ONE_ROOT}, {NAN, NAN, NO_ROOTS}, {NAN, NAN, INFINITE_ROOTS} };
@@ -186,15 +188,15 @@ int run_test()
     return passed;
 }
 
-void user_wishes()
+void user_wishes() //TODO rename
 {
     int symbols_number = 0;
     int passed = 0;
 
     passed = run_test();
 
-    printf("If you want to see the results of unit tests write 'YES'\n");
-    printf("If you don't want to see the results of unit tests write 'NO'\n");
+    printf("If you want to see the results of unit tests write 'YES'\n"
+           "If you don't want to see the results of unit tests write 'NO'\n"); //TODO use one printf
 
     scanf("%*s%n", &symbols_number);
 
@@ -226,6 +228,40 @@ void poltorashka(const char *name)
     printf(" \n");
     printf(" ");
 }
+
+void run_tests_from_file()
+{
+    FILE *file = fopen("test.txt", "r"); //TODO in func
+    if (file == NULL)
+    {
+        printf("File test.txt isn't open\n");
+        return;
+    }
+
+    int change_for_nRoots = 0;
+    int passed = 0;
+    int total_tests = 0;
+
+    while (!feof(file))
+    {
+        coeffs_data coeffs;
+        roots_data roots; //TODO initialize
+
+        int num_of_symbols = fscanf(file, "%lg %lg %lg %lg %lg %d",
+                              &coeffs.a, &coeffs.b, &coeffs.c,
+                              &roots.x1, &roots.x2, &change_for_nRoots); //TODO fscanf return value
+        roots.nRoots = (NumberSolutions)change_for_nRoots; //TODO func - what if we (NumberSolutions) 100
+
+        if (num_of_symbols != 6)
+            break;
+
+        total_tests++;
+        passed += one_test(coeffs, &roots); //TODO split on files -> test.cpp test.h || input.cpp main.cpp solver.cpp
+    }
+    fclose(file);
+    printf("\nResults: %d from %d tests completed\n", passed, total_tests); //TODO escape - sequences
+}
+
 
 
 
