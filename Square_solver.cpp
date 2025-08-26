@@ -98,9 +98,6 @@ NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root)  
 
 void output_results(int number_of_roots, double root1, double root2)
 {
-    assert(!isnan(root1));
-    assert(!isnan(root2));
-
     switch(number_of_roots)
     {
     case NO_ROOTS:
