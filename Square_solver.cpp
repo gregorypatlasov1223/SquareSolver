@@ -11,11 +11,13 @@ int main()
 
     roots_data roots = {};
 
+    roots_data results = {};
+
     poltorashka("COMMIT GITHUB!\n");
 
     user_wishes();
 
-    input_coef(&coeffs.a, &coeffs.b, &coeffs.c);
+    input_coef(&coeffs);
 
     printf("Now let's move on to finding the roots.\n");
 
@@ -26,7 +28,7 @@ int main()
     if (compare_double(0, roots.x2))
         roots.x2 = 0;
 
-    output_results(roots.nRoots, roots.x1, roots.x2);
+    output_results(&results);
 
     return 0;
 }
@@ -96,20 +98,20 @@ NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root)  
     }
 }
 
-void output_results(int number_of_roots, double root1, double root2)
+void output_results(roots_data *solutions)
 {
-    switch(number_of_roots)
+    switch(solutions->nRoots)
     {
     case NO_ROOTS:
         printf("The equation has no solutions with the given coefficients!");
         break;
 
     case ONE_ROOT:
-        printf("The root of the equation is %lg.\n", root1);
+        printf("The root of the equation is %lg.\n", solutions->x1);
         break;
 
     case TWO_ROOTS:
-        printf("The roots of the equation are numbers %lg and %lg.\n", root1, root2);
+        printf("The roots of the equation are numbers %lg and %lg.\n", solutions->x1, solutions->x2);
         break;
 
     case INFINITE_ROOTS:
@@ -140,24 +142,24 @@ void clear_buffer()
 }
 
 
-int one_test(coeffs_data t_coeffs, roots_data expected_roots)
+int one_test(coeffs_data t_coeffs, roots_data *expected_roots)
 {
     roots_data calculated_roots;
 
     calculated_roots.nRoots = solve_equation(t_coeffs, &calculated_roots);
 
-    sort_two_values(&expected_roots.x1, &expected_roots.x2);
+    sort_two_values(&expected_roots->x1, &expected_roots->x2);
     sort_two_values(&calculated_roots.x1, &calculated_roots.x2);
 
-    if (!(calculated_roots.nRoots == expected_roots.nRoots &&
-         (compare_double(expected_roots.x1, calculated_roots.x1) && compare_double(expected_roots.x2, calculated_roots.x2))))
+    if (!(calculated_roots.nRoots == expected_roots->nRoots &&
+         (compare_double(expected_roots->x1, calculated_roots.x1) && compare_double(expected_roots->x2, calculated_roots.x2))))
     {
         printf("FAIL: Solve_Square(%lg, %lg, %lg," //TODO NAN check
                " --> %d, calculated_roots.x1 = %lg, calculated_roots.x2 = %lg"
-               " (should be expected_roots.x1 = %lg, expected_roots.x2 = %lg).\n",
+               " (should be expected_roots->x1 = %lg, expected_roots->x2 = %lg).\n",
                t_coeffs.a, t_coeffs.b, t_coeffs.c,
                calculated_roots.nRoots, calculated_roots.x1, calculated_roots.x2,
-               expected_roots.x1, expected_roots.x2);
+               expected_roots->x1, expected_roots->x2);
 
         return 0;
     }
@@ -177,8 +179,8 @@ int run_test()
 
     for (size_t i = 0; i < size; i++)
     {
-        one_test(t_coeffs[i], t_roots[i]);
-        passed += one_test(t_coeffs[i], t_roots[i]);
+        one_test(t_coeffs[i], &t_roots[i]);
+        passed += one_test(t_coeffs[i], &t_roots[i]);
     }
 
     return passed;
