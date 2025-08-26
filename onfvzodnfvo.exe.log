@@ -1,0 +1,39 @@
+
+--------------------------------------------------
+TXLib соболезнует...
+
+Программа: C:\Square_solver\onfvzodnfvo.exe,
+
+ВНЕЗАПНО: signal (22, 0x00): SIGABRT: Аварийное завершение программы, вызвана функция abort(). 
+
+С помощью функции signal() вы можете сами обработать эту ошибку.
+
+#1: TXLib [Ver: 00173a, Rev: 174, Date: 2025-08-03 17:59:06 +0400], Instance: 0x0057C65C (32-bit), Flags: Cmdre0, Thread: 0x7C0C (Main), GetLastError(): 126 (Не найден указанный модуль). 
+
+--------------------------------------------------
+Стек вызовов:
+
+# 1 0x75208F03 in C:\WINDOWS\System32\msvcrt.dll: raise()
+# 2 0x7520D3CB in C:\WINDOWS\System32\msvcrt.dll: abort()
+# 3 0x75209D47 in C:\WINDOWS\System32\msvcrt.dll: assert()
+# 8 0x771FD2FB in C:\WINDOWS\SYSTEM32\ntdll.dll: RtlInitializeExceptionChain()
+# 9 0x771FD281 in C:\WINDOWS\SYSTEM32\ntdll.dll: RtlGetAppContainerNamedObjectPath()
+
+TXLib печалится: Нет информации об исходных файлах. Вы не забыли опцию -g при компиляции?
+
+--------------------------------------------------
+Developed with:
+
+The Dumb Artist Library (TX Library)
+TXLib [Ver: 00173a, Rev: 174, Date: 2025-08-03 17:59:06 +0400]
+Copyright (C) Ded (Ilya Dedinsky, http://txlib.ru) <mail@txlib.ru>
+See license on: http://txlib.ru
+
+TXLib file:	c:\users\grigory\downloads\программа praise2\codeblocks\mingw\include\txlib.h
+Compiled:	Aug 26 2025 16:18:22, GNU g++ 4.8.1, std=201103L, MinGW Runtime 3.20, 32-bit, DEBUG
+Started:	Aug 26 2025 16:19:08
+
+Run file:	C:\Square_solver\onfvzodnfvo.exe
+Directory:	C:\Square_solver
+
+--------------------------------------------------
