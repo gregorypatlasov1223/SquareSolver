@@ -11,13 +11,9 @@ int main() //TODO argc argv
 
     roots_data roots = {};
 
-    roots_data results = {};
-
     poltorashka("COMMIT GITHUB!\n");
 
-    user_wishes();
-
-    run_tests_from_file();
+    user_answer();
 
     input_coef(&coeffs);
 
@@ -25,12 +21,7 @@ int main() //TODO argc argv
 
     roots.nRoots = solve_equation(coeffs, &roots);
 
-    if (compare_double(0, roots.x1)) //TODO in solve_equation
-        roots.x1 = 0;
-    if (compare_double(0, roots.x2))
-        roots.x2 = 0;
-
-    output_results(&results);
+    output_results(&roots);
 
     return 0;
 }
@@ -68,6 +59,12 @@ NumberSolutions linear_equation (coeffs_data coefficiant, roots_data *ptr_root)
     {
         ptr_root -> x1 = -coefficiant.c / coefficiant.b;
         ptr_root -> x2 = -coefficiant.c / coefficiant.b;
+
+        if (compare_double(0, ptr_root -> x1))
+            ptr_root -> x1 = 0;
+        if (compare_double(0, ptr_root -> x2))
+            ptr_root -> x2 = 0;
+
         return ONE_ROOT;
     }
 }
@@ -89,6 +86,12 @@ NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root)  
     {
         ptr_root -> x1 = (-coefficiant.b + sqrt(discriminant)) / (2 * coefficiant.a);
         ptr_root -> x2 = (-coefficiant.b - sqrt(discriminant)) / (2 * coefficiant.a);
+
+        if (compare_double(0, ptr_root -> x1))
+            ptr_root -> x1 = 0;
+        if (compare_double(0, ptr_root -> x2))
+            ptr_root -> x2 = 0;
+
         return TWO_ROOTS;
     }
 
@@ -96,6 +99,12 @@ NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root)  
     {
         ptr_root -> x1 = -coefficiant.b / (2 * coefficiant.a);
         ptr_root -> x2 = -coefficiant.b / (2 * coefficiant.a);
+
+        if (compare_double(0, ptr_root -> x1))
+            ptr_root -> x1 = 0;
+        if (compare_double(0, ptr_root -> x2))
+            ptr_root -> x2 = 0;
+
         return ONE_ROOT;
     }
 }
@@ -130,7 +139,6 @@ bool compare_double(double number1, double number2)
     if (isnan(number1) && isnan(number2))
         return true;
 
-    //assert(isnan(number1) && isnan(number2));
     if ((isnan(number1) && !isnan(number2)) || (!isnan(number1) && isnan(number2)))
         return false;
 
@@ -139,16 +147,16 @@ bool compare_double(double number1, double number2)
 
 void clear_buffer()
 {
-    int symbol = NAN;
-    while ((symbol = getchar()) != 'n' && symbol != EOF) ;
+    int symbol = 0;
+    while ((symbol = getchar()) != '\n' && symbol != EOF) {}
 }
 
 
-int one_test(coeffs_data t_coeffs, roots_data *expected_roots) //TODO rename
+int one_test(coeffs_data test_coeffs, roots_data *expected_roots)
 {
-    roots_data calculated_roots; //TODO initialize
+    roots_data calculated_roots = {};
 
-    calculated_roots.nRoots = solve_equation(t_coeffs, &calculated_roots);
+    calculated_roots.nRoots = solve_equation(test_coeffs, &calculated_roots);
 
     sort_two_values(&expected_roots->x1, &expected_roots->x2);
     sort_two_values(&calculated_roots.x1, &calculated_roots.x2);
@@ -156,52 +164,30 @@ int one_test(coeffs_data t_coeffs, roots_data *expected_roots) //TODO rename
     if (!(calculated_roots.nRoots == expected_roots->nRoots &&
          (compare_double(expected_roots->x1, calculated_roots.x1) && compare_double(expected_roots->x2, calculated_roots.x2))))
     {
-        printf("FAIL: Solve_Square(%lg, %lg, %lg," //TODO NAN check
-               " --> %d, calculated_roots.x1 = %lg, calculated_roots.x2 = %lg"
-               " (should be expected_roots->x1 = %lg, expected_roots->x2 = %lg).\n",
-               t_coeffs.a, t_coeffs.b, t_coeffs.c,
-               calculated_roots.nRoots, calculated_roots.x1, calculated_roots.x2,
-               expected_roots->x1, expected_roots->x2); //TODO use func
+        show_error (test_coeffs, calculated_roots, *expected_roots);
 
-        return 0; //TODO bool
+        return 0;
     }
 
     else
         return 1;
 }
 
-int run_test()
-{
-    int passed = 0; //TODO rename
-
-    coeffs_data t_coeffs[] = {  {1, -5, 6}       , {0, 3, 6}         , {0, 0, 1}           , {0, 0, 0}                  };
-    roots_data t_roots[]   = {  {2, 3, TWO_ROOTS}, {-2, -2, ONE_ROOT}, {NAN, NAN, NO_ROOTS}, {NAN, NAN, INFINITE_ROOTS} };
-
-    size_t size = sizeof(t_coeffs) / sizeof(t_coeffs[0]);
-
-    for (size_t i = 0; i < size; i++)
-    {
-        one_test(t_coeffs[i], &t_roots[i]);
-        passed += one_test(t_coeffs[i], &t_roots[i]);
-    }
-
-    return passed;
-}
-
-void user_wishes() //TODO rename
+void user_answer()
 {
     int symbols_number = 0;
     int passed = 0;
+    int total_tests = 0;
 
-    passed = run_test();
+    run_tests_from_file(&passed, &total_tests);
 
     printf("If you want to see the results of unit tests write 'YES'\n"
-           "If you don't want to see the results of unit tests write 'NO'\n"); //TODO use one printf
+           "If you don't want to see the results of unit tests write 'NO'\n");
 
     scanf("%*s%n", &symbols_number);
 
     if (symbols_number == 3)
-        printf("passed tests = %d\n", passed);
+        printf("\nResults: %d from %d tests completed\n", passed, total_tests);
     else
         printf("Alright, let's move on to solving the equation.\n");
 }
@@ -225,11 +211,10 @@ void poltorashka(const char *name)
     printf(" ");
     printf(" \n");
     printf("       ....／＞　 フ.....\n　　　　　| 　_　 _|\n　 　　　／`ミ _* 彡 -- %s!!\n　　 　 /　　　 　 |\n　　　 /　 ヽ　　 ﾉ\n　／￣|　　 |　|　|\n　| (￣ヽ＿_ヽ_)_)\n　＼二つ\n" ,name);
-    printf(" \n");
     printf(" ");
 }
 
-void run_tests_from_file()
+void run_tests_from_file(int *passed, int *total_tests)
 {
     FILE *file = fopen("test.txt", "r"); //TODO in func
     if (file == NULL)
@@ -239,13 +224,11 @@ void run_tests_from_file()
     }
 
     int change_for_nRoots = 0;
-    int passed = 0;
-    int total_tests = 0;
 
     while (!feof(file))
     {
-        coeffs_data coeffs;
-        roots_data roots; //TODO initialize
+        coeffs_data coeffs = {};
+        roots_data roots = {};
 
         int num_of_symbols = fscanf(file, "%lg %lg %lg %lg %lg %d",
                               &coeffs.a, &coeffs.b, &coeffs.c,
@@ -255,11 +238,21 @@ void run_tests_from_file()
         if (num_of_symbols != 6)
             break;
 
-        total_tests++;
-        passed += one_test(coeffs, &roots); //TODO split on files -> test.cpp test.h || input.cpp main.cpp solver.cpp
+        *total_tests = *total_tests + 1;
+        *passed += one_test(coeffs, &roots); //TODO split on files -> test.cpp test.h || input.cpp main.cpp solver.cpp
     }
     fclose(file);
-    printf("\nResults: %d from %d tests completed\n", passed, total_tests); //TODO escape - sequences
+     //TODO escape - sequences
+}
+
+void show_error (coeffs_data test_coeffs, roots_data calculated_roots, roots_data expected_roots)
+{
+    printf("FAIL: Solve_Square(%lg, %lg, %lg,"
+               " --> %d, calculated_roots.x1 = %lg, calculated_roots.x2 = %lg"
+               " (should be expected_roots->x1 = %lg, expected_roots->x2 = %lg).\n",
+               test_coeffs.a, test_coeffs.b, test_coeffs.c,
+               calculated_roots.nRoots, calculated_roots.x1, calculated_roots.x2,
+               expected_roots.x1, expected_roots.x2);
 }
 
 
