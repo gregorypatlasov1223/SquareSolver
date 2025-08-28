@@ -5,14 +5,14 @@
 #include <assert.h>
 #include "square_solver.h"
 
-NumberSolutions solve_equation(coeffs_data coefficiant, roots_data *ptr_root) //TODO white theme
+NumberSolutions solve_equation(coeffs_data coefficiant, roots_data *ptr_root)
 {
     assert(&(ptr_root->x1));
     assert(&(ptr_root->x2));
     assert(&(ptr_root->x1) != &(ptr_root->x2));;
 
-    ptr_root -> x1 = NAN;
-    ptr_root -> x2 = NAN;
+    ptr_root->x1 = NAN;
+    ptr_root->x2 = NAN;
 
     if (compare_double(coefficiant.a, 0))
         return linear_equation(coefficiant,ptr_root);
@@ -36,13 +36,13 @@ NumberSolutions linear_equation(coeffs_data coefficiant, roots_data *ptr_root)
 
     else
     {
-        ptr_root -> x1 = -coefficiant.c / coefficiant.b;
-        ptr_root -> x2 = -coefficiant.c / coefficiant.b;
+        ptr_root->x1 = -coefficiant.c / coefficiant.b;
+        ptr_root->x2 = -coefficiant.c / coefficiant.b;
 
-        if (compare_double(0, ptr_root -> x1))
-            ptr_root -> x1 = 0;
-        if (compare_double(0, ptr_root -> x2))
-            ptr_root -> x2 = 0;
+        if (compare_double(0, ptr_root->x1))
+            ptr_root->x1 = 0;
+        if (compare_double(0, ptr_root->x2))
+            ptr_root->x2 = 0;
 
         return ONE_ROOT;
     }
@@ -63,26 +63,26 @@ NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root)  
 
     else if (discriminant > 0)
     {
-        ptr_root -> x1 = (-coefficiant.b + sqrt(discriminant)) / (2 * coefficiant.a);
-        ptr_root -> x2 = (-coefficiant.b - sqrt(discriminant)) / (2 * coefficiant.a);
+        ptr_root->x1 = (-coefficiant.b + sqrt(discriminant)) / (2 * coefficiant.a);
+        ptr_root->x2 = (-coefficiant.b - sqrt(discriminant)) / (2 * coefficiant.a);
 
-        if (compare_double(0, ptr_root -> x1))
-            ptr_root -> x1 = 0;
-        if (compare_double(0, ptr_root -> x2))
-            ptr_root -> x2 = 0;
+        if (compare_double(0, ptr_root->x1))
+            ptr_root->x1 = 0;
+        if (compare_double(0, ptr_root->x2))
+            ptr_root->x2 = 0;
 
         return TWO_ROOTS;
     }
 
     else
     {
-        ptr_root -> x1 = -coefficiant.b / (2 * coefficiant.a);
-        ptr_root -> x2 = -coefficiant.b / (2 * coefficiant.a);
+        ptr_root->x1 = -coefficiant.b / (2 * coefficiant.a);
+        ptr_root->x2 = -coefficiant.b / (2 * coefficiant.a);
 
-        if (compare_double(0, ptr_root -> x1))
-            ptr_root -> x1 = 0;
-        if (compare_double(0, ptr_root -> x2))
-            ptr_root -> x2 = 0;
+        if (compare_double(0, ptr_root->x1))
+            ptr_root->x1 = 0;
+        if (compare_double(0, ptr_root->x2))
+            ptr_root->x2 = 0;
 
         return ONE_ROOT;
     }

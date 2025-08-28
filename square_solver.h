@@ -27,7 +27,7 @@ const double ERROR_RATE = 10e-15;
 
 void user_answer();
 
-int one_test(coeffs_data test_coeffs, roots_data *expected_roots);
+bool one_test(coeffs_data test_coeffs, roots_data *expected_roots);
 
 void input_coef(coeffs_data *coefficiant);
 
@@ -40,6 +40,8 @@ NumberSolutions linear_equation (coeffs_data coefficiant, roots_data *ptr_root);
 void output_results(roots_data *solutions);
 
 void run_tests_from_file(int *passed, int *total_tests);
+
+FILE* open_file_and_check(const char* filename, const char* mode);
 
 bool compare_double(double number1, double number2);
 

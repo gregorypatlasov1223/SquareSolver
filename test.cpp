@@ -3,7 +3,7 @@
 #include "square_solver.h"
 #include "colors_codes.h"
 
-int one_test(coeffs_data test_coeffs, roots_data *expected_roots) //TODO bool
+bool one_test(coeffs_data test_coeffs, roots_data *expected_roots)
 {
     roots_data calculated_roots = {};
 
@@ -17,32 +17,31 @@ int one_test(coeffs_data test_coeffs, roots_data *expected_roots) //TODO bool
     {
         show_error(test_coeffs, calculated_roots, *expected_roots);
 
-        return 0;
+        return false;
     }
 
     else
-        return 1;
+        return true;
 }
 
 void run_tests_from_file(int *passed, int *total_tests)
 {
-    FILE *file = fopen("test.txt", "r"); //TODO in func
+    FILE* file = open_file_and_check("test.txt", "r");
+
     if (file == NULL)
-    {
-        printf(RED "File test.txt isn't open\n" RESET);
         return;
-    }
 
     int change_for_nRoots = 0;
 
     while (!feof(file))
     {
         coeffs_data coeffs = {};
-        roots_data roots = {};
+        roots_data roots   = {};
 
         int num_of_symbols = fscanf(file, "%lg %lg %lg %lg %lg %d",
                               &coeffs.a, &coeffs.b, &coeffs.c,
                               &roots.x1, &roots.x2, &change_for_nRoots);
+
         roots.nRoots = (NumberSolutions)change_for_nRoots;
 
         if (num_of_symbols != 6)
@@ -51,6 +50,7 @@ void run_tests_from_file(int *passed, int *total_tests)
         *total_tests = *total_tests + 1;
         *passed += one_test(coeffs, &roots);
     }
+
     fclose(file);
 }
 
@@ -75,4 +75,19 @@ void sort_two_values(double *number1, double *number2)
             *number2 = temp;
         }
     }
+}
+
+
+FILE* open_file_and_check(const char* filename, const char* mode)
+{
+    FILE* file = fopen(filename, mode);
+
+    if (file == NULL)
+    {
+        printf(RED "File %s isn't open\n" RESET, filename);
+        return NULL;
+    }
+
+    else
+        return file;
 }

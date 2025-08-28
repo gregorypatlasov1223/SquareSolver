@@ -30,5 +30,6 @@ void error_output()
 void clear_buffer()
 {
     int symbol = 0;
-    while ((symbol = getchar()) != '\n' && symbol != EOF) {}
+    while ((symbol = getchar()) != '\n' && symbol != EOF)
+        continue;
 }
