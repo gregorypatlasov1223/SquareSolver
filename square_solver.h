@@ -33,9 +33,9 @@ void input_coef(coeffs_data *coefficiant);
 
 void error_output();
 
-NumberSolutions solve_equation  (coeffs_data coefficiant, roots_data *ptr_root);
-NumberSolutions square_equation (coeffs_data coefficiant, roots_data *ptr_root);
-NumberSolutions linear_equation (coeffs_data coefficiant, roots_data *ptr_root);
+NumberSolutions solve_equation(coeffs_data coefficiant, roots_data *ptr_root);
+NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root);
+NumberSolutions linear_equation(coeffs_data coefficiant, roots_data *ptr_root);
 
 void output_results(roots_data *solutions);
 
@@ -49,6 +49,6 @@ void sort_two_values(double *x1, double *x2);
 
 void clear_buffer();
 
-void show_error (coeffs_data test_coeffs, roots_data calculated_roots, roots_data expected_roots);
+void show_error(coeffs_data test_coeffs, roots_data calculated_roots, roots_data expected_roots);
 
 #endif  // SQUARE_SOLVER_H_

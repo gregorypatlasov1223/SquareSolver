@@ -1,4 +1,3 @@
-#include <TXLib.h>
 #include <stdio.h>
 #include "square_solver.h"
 #include "colors_codes.h"

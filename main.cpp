@@ -1,13 +1,27 @@
-#include <TXLib.h>
 #include <stdio.h>
+#include <string.h>
 #include "square_solver.h"
 #include "colors_codes.h"
+#include "test.h"
 
 int main(int argc, const char *argv[])
 {
-    printf("\nYou launch the program: %s\n", argv[0]); //TODO check argc
+    printf("\nYou launch the program: %s\n", argv[0]);
 
-    printf("Total arguements: %d\n", argc); //TODO use argv to read test
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "--test") == 0)
+        {
+            int passed = 0;
+            int total_tests = 0;
+
+            run_tests_from_file(&passed, &total_tests);
+
+            return 0;
+        }
+    }
+
+    printf("Normal execution mode. Use --test for tests.\n");
 
     coeffs_data coeffs = {};
 

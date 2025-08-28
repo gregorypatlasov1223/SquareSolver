@@ -1,4 +1,3 @@
-#include <TXLib.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
@@ -111,11 +110,6 @@ void user_answer()
            "If you don't want to see the results of unit tests write 'NO'\n");
 
     scanf("%*s%n", &symbols_number);
-
-    if (symbols_number == 3)
-        printf("\nResults: %d from %d tests completed\n", passed, total_tests);
-    else
-        printf("Alright, let's move on to solving the equation.\n");
 }
 
 

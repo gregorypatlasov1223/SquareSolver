@@ -1,5 +1,5 @@
-#include <TXLib.h>
 #include <stdio.h>
+#include <math.h>
 #include "square_solver.h"
 #include "colors_codes.h"
 
@@ -50,11 +50,12 @@ void run_tests_from_file(int *passed, int *total_tests)
         *total_tests = *total_tests + 1;
         *passed += one_test(coeffs, &roots);
     }
+    printf("\nResults: %d from %d tests completed\n", *passed, *total_tests);
 
     fclose(file);
 }
 
-void show_error(coeffs_data test_coeffs, roots_data calculated_roots, roots_data expected_roots) //TODO
+void show_error(coeffs_data test_coeffs, roots_data calculated_roots, roots_data expected_roots)
 {
     printf(RED "FAIL: Solve_Square(%lg, %lg, %lg,"
                " --> %d, calculated_roots.x1 = %lg, calculated_roots.x2 = %lg"
