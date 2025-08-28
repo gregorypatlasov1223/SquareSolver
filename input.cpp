@@ -1,17 +1,11 @@
 #include <TXLib.h>
 #include <stdio.h>
-#include "Square_solver.h"
+#include "square_solver.h"
+#include "colors_codes.h"
 
 void input_coef(coeffs_data *coefficiant)
 {
-    /*assert(ptr_a);
-    assert(ptr_b);
-    assert(ptr_c);
-    assert(ptr_a != ptr_b);
-    assert(ptr_a != ptr_c);
-    assert(ptr_b != ptr_c);*/
-
-    printf("Let's solve an equation of the form ax^2 + bx + c = 0.\n");
+    printf(YELLOW "Let's solve an equation of the form ax^2 + bx + c = 0.\n" RESET);
 
     printf("Enter the coefficient a.\n");
     while (scanf("%lg", &(coefficiant->a)) != 1)
@@ -28,7 +22,13 @@ void input_coef(coeffs_data *coefficiant)
 
 void error_output()
 {
-    printf("Input error!\n");
+    printf(RED "Input error!\n" RESET);
     clear_buffer();
-    printf("Try again!\n");
+    printf(RED "Try again!\n" RESET);
+}
+
+void clear_buffer()
+{
+    int symbol = 0;
+    while ((symbol = getchar()) != '\n' && symbol != EOF) {}
 }
