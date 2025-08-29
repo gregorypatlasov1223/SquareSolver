@@ -3,6 +3,7 @@
 #include <math.h>
 #include <assert.h>
 #include "square_solver.h"
+#include "test.h"
 
 NumberSolutions solve_equation(coeffs_data coefficiant, roots_data *ptr_root)
 {
@@ -100,16 +101,10 @@ bool compare_double(double number1, double number2)
 
 void user_answer()
 {
-    int symbols_number = 0;
     int passed = 0;
     int total_tests = 0;
 
     run_tests_from_file(&passed, &total_tests);
-
-    printf("If you want to see the results of unit tests write 'YES'\n"
-           "If you don't want to see the results of unit tests write 'NO'\n");
-
-    scanf("%*s%n", &symbols_number);
 }
 
 

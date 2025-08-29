@@ -2,8 +2,9 @@
 #include <math.h>
 #include "square_solver.h"
 #include "colors_codes.h"
+#include "test.h"
 
-bool one_test(coeffs_data test_coeffs, roots_data *expected_roots)
+int one_test(coeffs_data test_coeffs, roots_data *expected_roots)
 {
     roots_data calculated_roots = {};
 
@@ -17,11 +18,11 @@ bool one_test(coeffs_data test_coeffs, roots_data *expected_roots)
     {
         show_error(test_coeffs, calculated_roots, *expected_roots);
 
-        return false;
+        return 0;
     }
 
     else
-        return true;
+        return 1;
 }
 
 void run_tests_from_file(int *passed, int *total_tests)

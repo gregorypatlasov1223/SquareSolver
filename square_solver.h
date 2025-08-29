@@ -27,8 +27,6 @@ const double ERROR_RATE = 10e-15;
 
 void user_answer();
 
-bool one_test(coeffs_data test_coeffs, roots_data *expected_roots);
-
 void input_coef(coeffs_data *coefficiant);
 
 void error_output();
@@ -39,16 +37,8 @@ NumberSolutions linear_equation(coeffs_data coefficiant, roots_data *ptr_root);
 
 void output_results(roots_data *solutions);
 
-void run_tests_from_file(int *passed, int *total_tests);
-
-FILE* open_file_and_check(const char* filename, const char* mode);
-
 bool compare_double(double number1, double number2);
 
-void sort_two_values(double *x1, double *x2);
-
 void clear_buffer();
-
-void show_error(coeffs_data test_coeffs, roots_data calculated_roots, roots_data expected_roots);
 
 #endif  // SQUARE_SOLVER_H_
