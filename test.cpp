@@ -27,24 +27,23 @@ int one_test(coeffs_data test_coeffs, roots_data *expected_roots)
 
 void run_tests_from_file(int *passed, int *total_tests)
 {
-    FILE* file = open_file_and_check("test.txt", "r");
+    FILE* file = open_file_and_check("test.txt", "rb");
 
     if (file == NULL)
         return;
 
     int change_for_nRoots = 0;
 
+    //feof - extra, dont need remove
     while (!feof(file))
     {
-        coeffs_data coeffs = {};
+        coeffs_data coeffs = {};//TODO: Init NAN
         roots_data roots   = {};
 
         int num_of_symbols = fscanf(file, "%lg %lg %lg %lg %lg %d",
                               &coeffs.a, &coeffs.b, &coeffs.c,
                               &roots.x1, &roots.x2, &change_for_nRoots);
-
         roots.nRoots = (NumberSolutions)change_for_nRoots;
-
         if (num_of_symbols != 6)
             break;
 
@@ -89,7 +88,6 @@ FILE* open_file_and_check(const char* filename, const char* mode)
         printf(RED "File %s isn't open\n" RESET, filename);
         return NULL;
     }
-
     else
         return file;
 }

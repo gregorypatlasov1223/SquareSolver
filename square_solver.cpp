@@ -5,7 +5,7 @@
 #include "square_solver.h"
 #include "test.h"
 
-NumberSolutions solve_equation(coeffs_data coefficiant, roots_data *ptr_root)
+NumberSolutions solve_equation(coeffs_data coefficient, roots_data *ptr_root)
 {
     assert(&(ptr_root->x1));
     assert(&(ptr_root->x2));
@@ -14,21 +14,21 @@ NumberSolutions solve_equation(coeffs_data coefficiant, roots_data *ptr_root)
     ptr_root->x1 = NAN;
     ptr_root->x2 = NAN;
 
-    if (compare_double(coefficiant.a, 0))
-        return linear_equation(coefficiant,ptr_root);
+    if (compare_double(coefficient.a, 0))
+        return linear_equation(coefficient,ptr_root);
     else
-        return square_equation(coefficiant,ptr_root);
+        return square_equation(coefficient,ptr_root);
 }
 
-NumberSolutions linear_equation(coeffs_data coefficiant, roots_data *ptr_root)
+NumberSolutions linear_equation(coeffs_data coefficient, roots_data *ptr_root)
 {
     assert(&(ptr_root->x1));
     assert(&(ptr_root->x2));
     assert(&(ptr_root->x1) != &(ptr_root->x2));
 
-    if (compare_double(coefficiant.b, 0))
+    if (compare_double(coefficient.b, 0))
     {
-        if (compare_double(coefficiant.c, 0))
+        if (compare_double(coefficient.c, 0))
             return INFINITE_ROOTS;
         else
             return NO_ROOTS;
@@ -36,8 +36,8 @@ NumberSolutions linear_equation(coeffs_data coefficiant, roots_data *ptr_root)
 
     else
     {
-        ptr_root->x1 = -coefficiant.c / coefficiant.b;
-        ptr_root->x2 = -coefficiant.c / coefficiant.b;
+        ptr_root->x1 = -coefficient.c / coefficient.b;
+        ptr_root->x2 = -coefficient.c / coefficient.b;
 
         if (compare_double(0, ptr_root->x1))
             ptr_root->x1 = 0;
@@ -48,7 +48,7 @@ NumberSolutions linear_equation(coeffs_data coefficiant, roots_data *ptr_root)
     }
 }
 
-NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root)  //&(*ptr_root).x1    &(ptr_root->x1)
+NumberSolutions square_equation(coeffs_data coefficient, roots_data *ptr_root)
 {
     assert(&(ptr_root->x1));
     assert(&(ptr_root->x2));
@@ -56,15 +56,15 @@ NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root)  
 
     double discriminant = NAN;
 
-    discriminant = coefficiant.b * coefficiant.b - 4 * coefficiant.a * coefficiant.c;
+    discriminant = coefficient.b * coefficient.b - 4 * coefficient.a * coefficient.c;
 
     if (discriminant < 0)
         return NO_ROOTS;
 
     else if (discriminant > 0)
     {
-        ptr_root->x1 = (-coefficiant.b + sqrt(discriminant)) / (2 * coefficiant.a);
-        ptr_root->x2 = (-coefficiant.b - sqrt(discriminant)) / (2 * coefficiant.a);
+        ptr_root->x1 = (-coefficient.b + sqrt(discriminant)) / (2 * coefficient.a);
+        ptr_root->x2 = (-coefficient.b - sqrt(discriminant)) / (2 * coefficient.a);
 
         if (compare_double(0, ptr_root->x1))
             ptr_root->x1 = 0;
@@ -76,8 +76,8 @@ NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root)  
 
     else
     {
-        ptr_root->x1 = -coefficiant.b / (2 * coefficiant.a);
-        ptr_root->x2 = -coefficiant.b / (2 * coefficiant.a);
+        ptr_root->x1 = -coefficient.b / (2 * coefficient.a);
+        ptr_root->x2 = -coefficient.b / (2 * coefficient.a);
 
         if (compare_double(0, ptr_root->x1))
             ptr_root->x1 = 0;
@@ -90,7 +90,7 @@ NumberSolutions square_equation(coeffs_data coefficiant, roots_data *ptr_root)  
 
 bool compare_double(double number1, double number2)
 {
-    if (isnan(number1) && isnan(number2))
+    if (isnan(number1) && isnan(number2)) //TODO: isinf
         return true;
 
     if ((isnan(number1) && !isnan(number2)) || (!isnan(number1) && isnan(number2)))
@@ -99,8 +99,9 @@ bool compare_double(double number1, double number2)
     return fabs(number1 - number2) < ERROR_RATE;
 }
 
-void user_answer()
+void user_answer() //TODO: Remove or change
 {
+    //TODO: make local
     int passed = 0;
     int total_tests = 0;
 

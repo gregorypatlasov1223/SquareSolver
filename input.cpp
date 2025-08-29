@@ -2,20 +2,20 @@
 #include "square_solver.h"
 #include "colors_codes.h"
 
-void input_coef(coeffs_data *coefficiant)
+void input_coef(coeffs_data *coefficient) 
 {
     printf(YELLOW "Let's solve an equation of the form ax^2 + bx + c = 0.\n" RESET);
 
     printf("Enter the coefficient a.\n");
-    while (scanf("%lg", &(coefficiant->a)) != 1)
+    while (scanf("%lg", &(coefficient->a)) != 1)
         error_output();
 
     printf("Enter the coefficient b.\n");
-    while (scanf("%lg", &(coefficiant->b)) != 1)
+    while (scanf("%lg", &(coefficient->b)) != 1)
         error_output();
 
     printf("Enter the coefficient c.\n");
-    while (scanf("%lg", &(coefficiant->c)) != 1)
+    while (scanf("%lg", &(coefficient->c)) != 1)
         error_output();
 }
 
