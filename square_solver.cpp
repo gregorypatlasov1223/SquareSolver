@@ -90,7 +90,7 @@ NumberSolutions square_equation(coeffs_data coefficient, roots_data *ptr_root)
 
 bool compare_double(double number1, double number2)
 {
-    if (isnan(number1) && isnan(number2)) //TODO: isinf
+    if (isnan(number1) && isnan(number2))
         return true;
 
     if ((isnan(number1) && !isnan(number2)) || (!isnan(number1) && isnan(number2)))
@@ -98,16 +98,6 @@ bool compare_double(double number1, double number2)
 
     return fabs(number1 - number2) < ERROR_RATE;
 }
-
-void user_answer() //TODO: Remove or change
-{
-    //TODO: make local
-    int passed = 0;
-    int total_tests = 0;
-
-    run_tests_from_file(&passed, &total_tests);
-}
-
 
 
 

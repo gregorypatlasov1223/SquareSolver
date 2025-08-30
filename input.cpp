@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include "square_solver.h"
 #include "colors_codes.h"
+#include "input.h"
 
-void input_coef(coeffs_data *coefficient) 
+void input_coef(coeffs_data *coefficient)
 {
     printf(YELLOW "Let's solve an equation of the form ax^2 + bx + c = 0.\n" RESET);
 

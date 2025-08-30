@@ -1,10 +1,11 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <math.h>
 #include "square_solver.h"
 #include "colors_codes.h"
 #include "test.h"
 
-int one_test(coeffs_data test_coeffs, roots_data *expected_roots)
+bool one_test(coeffs_data test_coeffs, roots_data *expected_roots)
 {
     roots_data calculated_roots = {};
 
@@ -18,41 +19,11 @@ int one_test(coeffs_data test_coeffs, roots_data *expected_roots)
     {
         show_error(test_coeffs, calculated_roots, *expected_roots);
 
-        return 0;
+        return false;
     }
 
     else
-        return 1;
-}
-
-void run_tests_from_file(int *passed, int *total_tests)
-{
-    FILE* file = open_file_and_check("test.txt", "rb");
-
-    if (file == NULL)
-        return;
-
-    int change_for_nRoots = 0;
-
-    //feof - extra, dont need remove
-    while (!feof(file))
-    {
-        coeffs_data coeffs = {};//TODO: Init NAN
-        roots_data roots   = {};
-
-        int num_of_symbols = fscanf(file, "%lg %lg %lg %lg %lg %d",
-                              &coeffs.a, &coeffs.b, &coeffs.c,
-                              &roots.x1, &roots.x2, &change_for_nRoots);
-        roots.nRoots = (NumberSolutions)change_for_nRoots;
-        if (num_of_symbols != 6)
-            break;
-
-        *total_tests = *total_tests + 1;
-        *passed += one_test(coeffs, &roots);
-    }
-    printf("\nResults: %d from %d tests completed\n", *passed, *total_tests);
-
-    fclose(file);
+        return true;
 }
 
 void show_error(coeffs_data test_coeffs, roots_data calculated_roots, roots_data expected_roots)

@@ -25,12 +25,6 @@ struct roots_data
 
 const double ERROR_RATE = 10e-15;
 
-void user_answer();
-
-void input_coef(coeffs_data *coefficient);
-
-void error_output();
-
 NumberSolutions solve_equation(coeffs_data coefficient, roots_data *ptr_root);
 NumberSolutions square_equation(coeffs_data coefficient, roots_data *ptr_root);
 NumberSolutions linear_equation(coeffs_data coefficient, roots_data *ptr_root);
@@ -38,7 +32,5 @@ NumberSolutions linear_equation(coeffs_data coefficient, roots_data *ptr_root);
 void output_results(roots_data *solutions);
 
 bool compare_double(double number1, double number2);
-
-void clear_buffer();
 
 #endif  // SQUARE_SOLVER_H_
