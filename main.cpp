@@ -7,8 +7,6 @@
 #include "parse_flags.h"
 #include "interactive.h"
 
-
-
 int main(int argc, char *argv[])
 {
     FlagTypes status = HELP_FLAG;
@@ -24,8 +22,6 @@ int main(int argc, char *argv[])
             run_tests_from_file();
             break;
         case INTERACTIVE_FLAG:
-            interactive();
-            break;
         default:
             interactive();
             break;

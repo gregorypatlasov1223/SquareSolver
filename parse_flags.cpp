@@ -47,7 +47,7 @@ void run_tests_from_file()
         passed += one_test(coeffs, &roots);
     }
 
-    printf("\nResults: %d from %d tests completed\n", passed, total_tests);
+    printf(GREEN "\nResults: %d from %d tests completed\n" RESET, passed, total_tests);
 
     fclose(file);
 }

@@ -30,6 +30,7 @@ test.o: test.cpp
 
 parse_flags.o: parse_flags.cpp
 	g++ $(FLAGS) -c parse_flags.cpp
+
 interactive.o: interactive.cpp
 	g++ $(FLAGS) -c interactive.cpp
 
